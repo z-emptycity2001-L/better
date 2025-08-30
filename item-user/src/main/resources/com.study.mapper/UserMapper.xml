@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mapper.UserMapper">
+
+    <select id="selectUserByUsername" resultType="User">
+        select * from user where username=#{username}
+    </select>
+    <select id="selectUserById" resultType="User">
+        select * from user where id=#{id}
+    </select>
+    <select id="selectUserByMailbox">
+        select * from user where mailbox=#{mailbox}
+    </select>
+
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into
+            user(username,nickname,password,sex,mailbox,avatar,id_number,create_time,update_time)
+        values(#{username},#{nickname},#{password},#{sex},#{mailbox},#{avatar},#{idNumber},#{createTime},#{updateTime})
+    </insert>
+
+    <update id="updateUser">
+        update user set nickname=#{nickname},sex=#{sex},avatar=#{avatar},id_number=#{idNumber},update_time=#{updateTime}
+    </update>
+
+    <update id="updateUserPasswordByMailbox">
+        update user set password=#{password}
+    </update>
+    <delete id="deleteUserByUsername">
+        delete from user where username=#{username}
+    </delete>
+
+</mapper>

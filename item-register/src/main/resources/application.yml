@@ -1,0 +1,13 @@
+server:
+  port: 8080
+spring:
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+  data:
+    redis:
+      host: 192.168.88.129
+      port: 7001
+  mvc:
+    async:
+      request-timeout: 60000

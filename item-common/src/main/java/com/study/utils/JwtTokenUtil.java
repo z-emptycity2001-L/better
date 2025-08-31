@@ -60,8 +60,6 @@ import java.util.Objects;
             try {
                 Claims claimsFromToken = getClaimsFromToken(token);
                 userId = Long.parseLong(claimsFromToken.get(JwtConstants.CLAIM_KEY_USER).toString());
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                user = objectMapper.convertValue(claimsFromToken.get(CLAIM_KEY_USER),User.class);
             }catch (Exception e){
                 throw new RuntimeException(e);
             }

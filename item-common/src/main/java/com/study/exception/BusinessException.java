@@ -1,8 +1,7 @@
 package com.study.exception;
 
-import com.study.exception.Eume.ExceptEnum;
+import com.study.Eume.ExceptEnum;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 /**
  * 自定义业务异常

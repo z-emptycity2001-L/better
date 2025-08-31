@@ -1,5 +1,6 @@
 package com.study.entity.dto;
 
+import com.study.utils.CommonResponse;
 import io.lettuce.core.dynamic.annotation.Param;
 import lombok.Data;
 import org.springframework.boot.context.properties.bind.DefaultValue;
@@ -9,7 +10,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  * @param <T> 响应数据类型
  */
 @Data
-public class ResponseDto<T> {
+public class ResponseDto<T> extends CommonResponse<T> {
     /** 状态码：200表示成功，非200表示失败 */
     private int code;
     /** 响应消息 */

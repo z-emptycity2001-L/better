@@ -1,7 +1,5 @@
 package com.study.strategy.impl;
 
-import com.alibaba.druid.filter.AutoLoad;
-import com.alibaba.fastjson2.util.DateUtils;
 import com.study.Constants.jwt.JwtConstants;
 import com.study.Constants.user.ThreadLocalConstants;
 import com.study.entity.dto.ResponseDto;
@@ -9,14 +7,14 @@ import com.study.entity.dto.user.LoginDTO;
 import com.study.entity.dto.user.RegisterDTO;
 import com.study.entity.po.User;
 import com.study.exception.BusinessException;
-import com.study.exception.Eume.ExceptEnum;
+import com.study.Eume.ExceptEnum;
 import com.study.mapper.UserMapper;
 import com.study.strategy.LoginStrategy;
+import com.study.util.UserRedisUtil;
 import com.study.utils.DateUtil;
 import com.study.utils.JwtTokenUtil;
 import com.study.utils.ThreadLocalUtil;
 import com.study.utils.redis.RedisUtil;
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
@@ -52,8 +50,8 @@ public class PasswordLoginStrategy implements LoginStrategy {
         }
         loginDTO.setPassword(md5DigestAsHex);
         threadLocalUtil.setThreadLocal(ThreadLocalConstants.USERINFO,loginDTO);
-        String token = jwtTokenUtil.generateToken(user.getId(), JwtConstants.TOKEN_EXPIRATION);
-        redisUtil.set(JwtConstants.TOKEN_KEY+user.getId(),token,JwtConstants.BLACK_LIST_TOKEN_EXPIRE, TimeUnit.MILLISECONDS);
+        String token = jwtTokenUtil.generateToken(user.getId(), JwtConstants.TOKEN_EXPIRATION);//创建一个三天有效期的token
+        redisUtil.set(JwtConstants.TOKEN_KEY+user.getUsername(),token,JwtConstants.TOKEN_REDIS_EXPIRATION, TimeUnit.MILLISECONDS);//redis中存放token，有效期为3小时
         return ResponseDto.success(token);
     }
 
@@ -81,5 +79,24 @@ public class PasswordLoginStrategy implements LoginStrategy {
             throw BusinessException.of(ExceptEnum.COMMON_ERROR_RESPONSE);
         }
         return ResponseDto.success("注册成功");
+    }
+
+    @Override
+    public ResponseDto<String> logout(LoginDTO loginDTO) {
+        int times=3;
+        try{
+            /* 如果lua脚本执行失败那么就重试 @Param{times} 次 */
+            while(
+                    UserRedisUtil.getLogout(JwtConstants.TOKEN_KEY + loginDTO.getUsername(),
+                    JwtConstants.BLACK_LIST_TOKEN_PRE_KEY + loginDTO.getUsername(),
+                    redisUtil.get(JwtConstants.TOKEN_KEY + loginDTO.getUsername()).toString(),
+                    JwtConstants.TOKEN_EXPIRATION)!=1
+                    &&times>0){
+                times--;
+            }
+            return ResponseDto.success("success");
+        }catch (Exception e){
+            throw BusinessException.of(ExceptEnum.COMMON_ERROR_RESPONSE);
+        }
     }
 }

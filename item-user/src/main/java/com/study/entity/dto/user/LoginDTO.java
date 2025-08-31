@@ -14,4 +14,6 @@ public class LoginDTO {
 //    private String code;
     private String username;
     private String password;
+
+    private Long id;
 }

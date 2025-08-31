@@ -9,4 +9,6 @@ public interface LoginStrategy {
     ResponseDto login(LoginDTO loginDTO);
     // 注册方法
     ResponseDto register(RegisterDTO registerDTO);
+
+    ResponseDto logout(LoginDTO loginDTO);
 }

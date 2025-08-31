@@ -1,12 +1,10 @@
 package com.study.strategy;
 
-import com.study.exception.Eume.ExceptEnum;
+import com.study.Eume.ExceptEnum;
 import com.study.strategy.impl.EmailLoginStrategy;
 import com.study.strategy.impl.PasswordLoginStrategy;
 import com.study.strategy.impl.PhoneLoginStrategy;
-import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,4 +27,5 @@ public class LoginStrategyFactory {
         }
         return strategy;
     }
+
 }
